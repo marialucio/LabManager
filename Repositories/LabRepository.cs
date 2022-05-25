@@ -39,7 +39,7 @@ class LabRepository
         return labs;
     }
 
-    public void Save(Lab lab)
+    public Lab Save(Lab lab)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
@@ -55,5 +55,7 @@ class LabRepository
             
         command.ExecuteNonQuery();
         connection.Close();
+
+        return lab;
     }
 }
