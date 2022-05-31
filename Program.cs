@@ -46,6 +46,7 @@ if (modelName == "Computer")
         computerRepository.Delete(id);
     }
 
+
     if(modelAction == "Update")
     {
         Console.WriteLine("Update Computer");
@@ -66,6 +67,7 @@ if (modelName == "Computer")
         Console.WriteLine($"{computer.Id}, {computer.Ram}, {computer.Processor}");
     }
 }
+
     
 if (modelName == "Lab")
 {
