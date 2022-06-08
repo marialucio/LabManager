@@ -27,11 +27,7 @@ class LabRepository
 
         while (reader.Read())
         {
-            var id = reader.GetInt32(0);
-            var number = reader.GetString(1);
-            var name = reader.GetString(2);
-            var block = reader.GetString(3);
-            var lab = new Lab(id, number, name, block);
+            var lab = ReaderToLab(reader);
             labs.Add(lab); 
         }
 
@@ -56,6 +52,24 @@ class LabRepository
         command.ExecuteNonQuery();
         connection.Close();
 
+        return lab;
+    }
+
+    public Lab GetById(int id)
+    {
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM Labs WHERE id = $id"; 
+        command.Parameters.AddWithValue("$id", id);
+
+        var reader = command.ExecuteReader();
+        reader.Read();
+
+        var lab = ReaderToLab(reader);
+
+        connection.Close();
         return lab;
     }
 
@@ -98,24 +112,24 @@ class LabRepository
         return lab;
     }
 
-    public Lab GetById(int id)
+    public bool ExistsById(int id)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT * FROM Labs WHERE id = $id"; 
+        command.CommandText = "SELECT COUNT(id) FROM Labs WHERE id = $id"; 
         command.Parameters.AddWithValue("$id", id);
 
-        var reader = command.ExecuteReader();
-        reader.Read();
+        var result = Convert.ToBoolean(command.ExecuteScalar());
 
-        var number = reader.GetString(1);
-        var name = reader.GetString(2);
-        var block = reader.GetString(3);
-        var lab = new Lab(id, number, name, block);
+        return result;
+    }
 
-        connection.Close();
+    private Lab ReaderToLab(SqliteDataReader  reader)
+    {
+        var lab = new Lab(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),  reader.GetString(3));
+
         return lab;
     }
 }
