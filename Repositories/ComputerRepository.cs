@@ -74,8 +74,6 @@ class ComputerRepository
         using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var result = Convert.ToBoolean(connection.ExecuteScalar("DELETE FROM Computers WHERE id = @Id", new {Id = id}));
-
-        return result;
+        return connection.ExecuteScalar<bool>("SELECT COUNT (id) FROM Computers WHERE Id = @Id", new {Id = id});
     }
 }

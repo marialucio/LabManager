@@ -49,7 +49,7 @@ class LabRepository
         using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        connection.Execute("SELECT * FROM Labs WHERE id = @Id", new {Id = id});
+        connection.Execute("DELETE FROM Labs WHERE id = @Id", new {Id = id});
     }
 
     public Lab Update(Lab lab)
@@ -74,8 +74,6 @@ class LabRepository
         using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var result = Convert.ToBoolean(connection.ExecuteScalar("SELECT COUNT(id) FROM Labs WHERE id = @Id", new {Id = id}));
-
-        return result;
+        return connection.ExecuteScalar<bool>("SELECT COUNT(id) FROM Labs WHERE id = @Id", new {Id = id});
     }
 }
